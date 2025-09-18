@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Docusign_Gen_Template__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Docusign Gen Template</label>
+    <referenceTo>dfsle__GenTemplate__c</referenceTo>
+    <relationshipLabel>Onboarding Documents</relationshipLabel>
+    <relationshipName>Onboarding_Documents</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

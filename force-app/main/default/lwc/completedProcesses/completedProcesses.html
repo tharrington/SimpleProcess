@@ -1,0 +1,69 @@
+<template>
+    <lightning-card title="Completed Processes">
+        <div class="slds-p-around_medium">
+            <template if:true={completedProcesses}>
+                <template for:each={completedProcesses} for:item="proc">
+                    <div key={proc.Id} class="slds-box slds-m-bottom_small">
+                        <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                            <strong>{proc.ProcessTemplateId__r.Name}</strong>
+                            <lightning-button
+                                label="Show Steps"
+                                data-id={proc.Id}
+                                onclick={toggleAccordion}
+                                variant="base">
+                            </lightning-button>
+                        </div>
+                        <p class="slds-m-vertical_x-small">
+                            <lightning-formatted-date-time
+                                value={proc.CreatedDate}
+                                year="numeric"
+                                month="short"
+                                day="2-digit"
+                                hour="2-digit"
+                                minute="2-digit"
+                                hour12="true">
+                            </lightning-formatted-date-time>
+                        </p>
+
+                        <template if:true={proc.expanded}>
+                            <lightning-accordion>
+                                <template for:each={proc.childSteps} for:item="step">
+                                    <lightning-accordion-section name={step.Id} label={step.stepLabel} key={step.Id}>
+                                        <p><strong>Status:</strong> {step.Status__c}</p>
+                                        <p><strong>Steps To Complete:</strong> {step.Steps_To_Complete__c}</p>
+                                        <p><strong>Due Date:</strong>
+                                            <lightning-formatted-date-time
+                                                value={step.Due_Date__c}
+                                                year="numeric"
+                                                month="short"
+                                                day="2-digit"
+                                                hour="2-digit"
+                                                minute="2-digit"
+                                                hour12="true">
+                                            </lightning-formatted-date-time>
+                                        </p>
+                                        <p><strong>Completed Date:</strong>
+                                            <lightning-formatted-date-time
+                                                value={step.Completed_Date__c}
+                                                year="numeric"
+                                                month="short"
+                                                day="2-digit"
+                                                hour="2-digit"
+                                                minute="2-digit"
+                                                hour12="true">
+                                            </lightning-formatted-date-time>
+                                        </p>
+                                        <p><strong>Owner:</strong> {step.Owner.Name}</p>
+                                    </lightning-accordion-section>
+                                </template>
+                            </lightning-accordion>
+                        </template>
+                    </div>
+                </template>
+            </template>
+            <template if:false={completedProcesses}>
+                <p>No completed workflows found.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

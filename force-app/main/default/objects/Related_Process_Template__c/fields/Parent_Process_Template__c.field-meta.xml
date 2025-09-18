@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Parent_Process_Template__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <label>Parent Process Template</label>
+    <referenceTo>Process_Template__c</referenceTo>
+    <relationshipLabel>Related Process Templates (Parent Process Template)</relationshipLabel>
+    <relationshipName>Parent_Process_Templates</relationshipName>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,114 @@
+<template>
+    <lightning-card title="Enroll Process">
+        <div class="slds-p-around_medium">
+            <lightning-combobox
+                label="Select Process Template"
+                options={templates}
+                value={selectedTemplateId}
+                onchange={handleTemplateChange}>
+            </lightning-combobox>
+
+            <br/>
+
+            <lightning-button
+                label="Enroll Process"
+                variant="brand"
+                class="slds-m-top_medium"
+                onclick={handleCreate}
+                disabled={isCreateDisabled}>
+            </lightning-button>
+        </div>
+    </lightning-card>
+
+    <br class="slds-m-top_large"/>
+
+
+    <lightning-card title="Running Workflows"  class="slds-m-top_large">
+        <div class="slds-p-around_medium">
+            <template if:true={hasProcesses}>
+                <template for:each={processData} for:item="proc">
+                    <div key={proc.Id} class="slds-m-bottom_medium">
+                        <strong>{proc.ProcessTemplateId__r.Name}</strong>
+
+                        <br/>
+                        <lightning-formatted-date-time
+                            value={proc.Due_Date__c}
+                            year="numeric"
+                            month="short"
+                            day="2-digit"
+                            hour="2-digit"
+                            minute="2-digit"
+                            hour12="true">
+                        </lightning-formatted-date-time>
+
+
+                        <lightning-combobox
+                            label="Update Status"
+                            data-id={proc.Id}
+                            value={proc.Status__c}
+                            options={statusOptions}
+                            onchange={handleStatusChange}
+                        ></lightning-combobox>
+
+                        
+
+                        <template if:true={proc.children}>
+                            <div class="slds-m-left_medium slds-m-top_medium">
+                                <template for:each={proc.children} for:item="child">
+                                    <lightning-card key={child.Id} class="slds-m-bottom_small">
+
+                                        <div slot="title" class="slds-grid slds-grid_vertical-align-center">
+                                            <div class="slds-col slds-truncate">
+                                                <strong>{child.stepTitle}</strong>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div class="slds-col_bump-left">
+                                            <lightning-combobox
+                                                variant="label-hidden"
+                                                class="slds-size_small"
+                                                data-id={child.Id}
+                                                value={child.Status__c}
+                                                options={statusOptions}
+                                                onchange={handleStatusChange}>
+                                            </lightning-combobox>
+                                        </div>
+
+                                        <div class="slds-p-horizontal_medium slds-p-vertical_small">
+                                            <p><strong>Required To Start:</strong> {child.In_Progress_Requirement__c}</p>
+
+                                            <template if:true={child.isCustomLogic}>
+                                                <p><strong>Custom Logic:</strong> Complete {child.Custom_Logic_In_Progress__c}</p>
+                                            </template>
+
+                                            <p><strong>Steps To Complete:</strong> {child.Steps_To_Complete__c}</p>
+
+                                            <p><strong>Due Date:</strong>
+                                                <span class={child.dueDateClass}>
+                                                    <lightning-formatted-date-time
+                                                        value={child.Due_Date__c}
+                                                        year="numeric"
+                                                        month="short"
+                                                        day="2-digit"
+                                                        hour="2-digit"
+                                                        minute="2-digit"
+                                                        hour12="true">
+                                                    </lightning-formatted-date-time>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </lightning-card>
+                                </template>
+                            </div>
+                        </template>
+
+                    </div>
+                </template>
+            </template>
+            <template if:false={hasProcesses}>
+                <p>No running workflows.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

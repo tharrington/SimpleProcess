@@ -1,0 +1,120 @@
+<template>
+    <lightning-card title="Process Configurator">
+        <div class="slds-p-around_medium">
+            <lightning-input
+                label="Process Name"
+                value={processName}
+                onchange={handleProcessNameChange}
+                class="slds-m-bottom_small">
+            </lightning-input>
+
+            <lightning-input
+                label="Steps To Complete"
+                value={stepsToComplete}
+                onchange={handleStepsToCompleteChange}
+                class="slds-m-bottom_small">
+            </lightning-input>
+
+            <lightning-combobox
+                class="slds-m-bottom_small"
+                name="templatePicker"
+                label="Start from Template"
+                placeholder="Select Template"
+                options={templateOptions}
+                onchange={handleTemplateChange}>
+            </lightning-combobox>
+
+            <div class="slds-m-bottom_small">
+                <lightning-button
+                    label="+ Add Step"
+                    onclick={handleAddStep}>
+                </lightning-button>
+
+                <lightning-button 
+                    label="+ Add Logic" 
+                    onclick={handleAddLogic}
+                    class="slds-m-left_small">
+                </lightning-button>
+
+
+                <lightning-button
+                    label="🖨 Print to Console"
+                    onclick={handlePrint}
+                    class="slds-m-left_small">
+                </lightning-button>
+
+                <lightning-button
+                    label="🗑 Delete Selected"
+                    onclick={handleDeleteConnection}
+                    class="slds-m-left_small">
+                </lightning-button>
+
+                <lightning-button
+                    variant="brand"
+                    label="💾 Save Process"
+                    onclick={saveProcess}
+                    class="slds-m-left_small">
+                </lightning-button>
+
+                <template if:true={showEditButton}>
+
+                    <lightning-button
+                        label="✏️ Edit Step Instructions"
+                        onclick={handleEditStepsClick}
+                        class="slds-m-left_small">
+                    </lightning-button>
+                </template> 
+            </div>
+        </div>
+
+        <div class="canvas-container" style="height: 600px; width: 100%;">
+            <div class="canvas" lwc:dom="manual"></div>
+        </div>
+    </lightning-card>
+
+    <template if:true={showEditModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-modal__title">Edit Instructions</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-textarea
+                        label="Steps to Complete"
+                        value={editStepsText}
+                        onchange={handleStepsInputChange}>
+                    </lightning-textarea>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" onclick={handleModalEditCancel}></lightning-button>
+                    <lightning-button variant="brand" label="Save" onclick={handleSaveSteps}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={showLogicModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-modal__title">Edit Logic Condition</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <p>Allowed Step Numbers: {allowedStepIdsText}</p>
+                    <lightning-input
+                        label="Custom Logic (e.g., '1 AND 2')"
+                        value={logicConditionInput}
+                        onchange={handleLogicConditionChange}>
+                    </lightning-input>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" onclick={handleLogicModalCancel}></lightning-button>
+                    <lightning-button variant="brand" label="Save" onclick={handleLogicModalSave}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+</template>

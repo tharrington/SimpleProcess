@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Generatea0OgK000003eKSvUAM</fullName>
+    <availability>online</availability>
+    <displayType>button</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <linkType>url</linkType>
+    <masterLabel>Business Onboarding</masterLabel>
+    <openType>replace</openType>
+    <protected>false</protected>
+    <url>{!URLFOR($Site.BaseUrl + &apos;/apex/dfsle__gendocumentgenerator&apos;, null, [sId = Onboarding_Document__c.Id, templateId = &apos;a0OgK000003eKSvUAM&apos;, recordId = Onboarding_Document__c.Id, title = &apos;Business Onboarding&apos;])}</url>
+</WebLink>

@@ -1,0 +1,16 @@
+<template>
+    <lightning-button label="Sign Now" onclick={handleSignClick}></lightning-button>
+
+    <template if:true={showIframe}>
+        <div style="margin-top: 20px;">
+            <iframe
+                src={signingUrl}
+                width="100%"
+                height="800px"
+                frameborder="0"
+                style="border: 1px solid #ccc;"
+                allowfullscreen
+            ></iframe>
+        </div>
+    </template>
+</template>
