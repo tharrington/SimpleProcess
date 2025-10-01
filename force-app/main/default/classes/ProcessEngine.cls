@@ -21,11 +21,6 @@ public without sharing class ProcessEngine {
 
         for (Process_Rule__c rule : rules) {
             Boolean passed = evaluateRule(rule, targetRecord);
-
-            // if (passed && rule.CustomProcessor__r?.ClassName__c != null) {
-            //     executeProcessor(rule.CustomProcessor__r.ClassName__c, process.TargetObjectId__c);
-            // }
-
         }
 
         // Evaluate subprocesses recursively
@@ -67,18 +62,4 @@ public without sharing class ProcessEngine {
         }
         return String.join(new List<String>(fields), ',');
     }
-
-    // private static void executeProcessor(String className, Id targetRecordId) {
-    //     try {
-    //         Type processorType = Type.forName(className);
-    //         if (processorType == null) return;
-
-    //         Object instance = processorType.newInstance();
-    //         if (instance instanceof ICustomProcessor) {
-    //             ((ICustomProcessor) instance).run(targetRecordId);
-    //         }
-    //     } catch (Exception e) {
-    //         System.debug('Processor execution failed: ' + e.getMessage());
-    //     }
-    // }
 }
