@@ -7,7 +7,6 @@ import updateProcessStatus from '@salesforce/apex/ProcessStepCtrl.updateProcessS
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
-
 export default class ProcessStep extends LightningElement {
     @api recordId;
     @api objectApiName;
@@ -17,8 +16,6 @@ export default class ProcessStep extends LightningElement {
     @track processData = [];
 
     wiredProcessesResult;
-
-    @track statusMap = {};
 
     get statusOptions() {
         return [
@@ -32,7 +29,6 @@ export default class ProcessStep extends LightningElement {
         return !this.selectedTemplateId;
     }
 
-    // Add this getter to check if there are any processes
     get hasProcesses() {
         return this.processData && this.processData.length > 0;
     }
@@ -41,7 +37,7 @@ export default class ProcessStep extends LightningElement {
     wiredTemplates({ data, error }) {
         if (data) {
             this.templates = data.map(t => ({ label: t.Name, value: t.Id }));
-        } else {
+        } else if (error) {
             console.error('Template fetch error:', error);
         }
     }
@@ -51,55 +47,19 @@ export default class ProcessStep extends LightningElement {
         this.wiredProcessesResult = result;
         const { data, error } = result;
         if (data) {
-            // Filter and transform parent + children
-            const topLevel = data
-                .filter(p => !p.ParentProcessId__c)
-                .map(p => ({
-                    ...p,
-                    children: p.ChildProcesses__r || []
-                }));
-
-            // ✅ Apply custom flags (overdue, custom logic, etc.)
-            this.setProcessData(topLevel);
+            this.processData = data;
         } else if (error) {
             console.error('Error loading processes:', error);
         }
     }
 
-    setProcessData(data) {
-        this.processData = data.map(proc => {
-            const children = (proc.ChildProcesses__r || []).map(child => {
-                const dueDate = new Date(child.Due_Date__c);
-                const now = new Date();
-                const isOverdue = dueDate < now;
-
-                return {
-                    ...child,
-                    isCustomLogic: child.In_Progress_Requirement__c === 'Custom Logic',
-                    dueDateClass: isOverdue ? 'slds-text-color_error' : '',
-                    stepTitle: `Step ${child.StepNumber__c}: ${child.Name}`
-                };
-            });
-
-            return {
-                ...proc,
-                children
-            };
-        });
-    }
-
-    // Event Handlers
     handleTemplateChange(event) {
         this.selectedTemplateId = event.detail.value;
     }
 
-    isCustomLogic(requirement) {
-        return requirement === 'Custom Logic';
-    }
-
     async handleCreate() {
         try {
-            const newId = await createProcessFromTemplate({
+            await createProcessFromTemplate({
                 templateId: this.selectedTemplateId,
                 targetObjectId: this.recordId,
                 targetObjectType: this.objectApiName
@@ -128,31 +88,13 @@ export default class ProcessStep extends LightningElement {
     }
 
     handleStatusChange(event) {
-        const processId = event.target.dataset.id;
-        const newStatus = event.detail.value;
+        const processId = event.detail.processId || event.target.dataset.id;
+        const newStatus = event.detail.newStatus || event.detail.value;
 
-        // Track original status
-        let originalStatus;
-        this.processData = this.processData.map(proc => {
-            return {
-                ...proc,
-                children: proc.children.map(child => {
-                    if (child.Id === processId) {
-                        originalStatus = child.Status__c;
-                        return {
-                            ...child,
-                            Status__c: newStatus // optimistic update
-                        };
-                    }
-                    return child;
-                })
-            };
-        });
-
-        this.handleStatusUpdate(processId, newStatus, originalStatus);
+        this.handleStatusUpdate(processId, newStatus);
     }
 
-    async handleStatusUpdate(processId, newStatus, originalStatus) {
+    async handleStatusUpdate(processId, newStatus) {
         try {
             await updateProcessStatus({ processId, newStatus });
 
@@ -169,22 +111,6 @@ export default class ProcessStep extends LightningElement {
         } catch (err) {
             console.error('Error updating status:', err);
 
-            // Revert UI to original status
-            this.processData = this.processData.map(proc => {
-                return {
-                    ...proc,
-                    children: proc.children.map(child => {
-                        if (child.Id === processId) {
-                            return {
-                                ...child,
-                                Status__c: originalStatus
-                            };
-                        }
-                        return child;
-                    })
-                };
-            });
-
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Error',
@@ -192,6 +118,8 @@ export default class ProcessStep extends LightningElement {
                     variant: 'error'
                 })
             );
+
+            await refreshApex(this.wiredProcessesResult);
         }
     }
 }

@@ -15,11 +15,7 @@ public class ProcessStepCtrlTest {
             true, // can start process
             testUser.Id, // assigned user
             1, // due in value
-            'Hours', // due in units
-            'Test_Field__c',
-            'contains',
-            'test value',
-            null // no parent
+            'Hours' // due in units
         );
         insert mainTemplate;
         
@@ -32,8 +28,7 @@ public class ProcessStepCtrlTest {
             false, // cannot start process
             testUser.Id,
             2, // due in 2 hours
-            'Hours',
-            null, null, null, null
+            'Hours'
         ));
         subTemplates.add(TestDataFactory.createProcessTemplateWithAllFields(
             'Sub Process 2',
@@ -42,8 +37,7 @@ public class ProcessStepCtrlTest {
             false, // cannot start process
             testUser.Id,
             1, // due in 1 day
-            'Days',
-            null, null, null, null
+            'Days'
         ));
         insert subTemplates;
         

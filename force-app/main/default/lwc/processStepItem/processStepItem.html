@@ -1,0 +1,69 @@
+<template>
+    <lightning-card class="slds-m-bottom_small">
+        <div slot="title" class="slds-grid slds-grid_vertical-align-center">
+            <div class="slds-col slds-truncate">
+                <strong>{stepTitle}</strong>
+            </div>
+        </div>
+
+        <div class="slds-col_bump-left slds-grid slds-grid_vertical-align-center">
+            <!-- Show expand button if has children -->
+            <template if:true={hasChildren}>
+                <lightning-button-icon
+                    icon-name={expandIconName}
+                    alternative-text="Toggle children"
+                    title="Toggle child processes"
+                    class="slds-m-right_small"
+                    onclick={toggleChildren}>
+                </lightning-button-icon>
+            </template>
+            
+            <lightning-combobox
+                variant="label-hidden"
+                class="slds-size_small"
+                data-id={process.Id}
+                value={process.Status}
+                options={statusOptions}
+                onchange={handleStatusChange}>
+            </lightning-combobox>
+        </div>
+
+        <div class="slds-p-horizontal_medium slds-p-vertical_small">
+            <p><strong>Required To Start:</strong> {process.In_Progress_Requirement}</p>
+
+            <template if:true={isCustomLogic}>
+                <p><strong>Custom Logic:</strong> Complete {process.Custom_Logic_In_Progress}</p>
+            </template>
+
+            <p><strong>Steps To Complete:</strong> {process.Steps_To_Complete}</p>
+
+            <p><strong>Due Date:</strong>
+                <span class={dueDateClass}>
+                    <lightning-formatted-date-time
+                        value={process.Due_Date}
+                        year="numeric"
+                        month="short"
+                        day="2-digit"
+                        hour="2-digit"
+                        minute="2-digit"
+                        hour12="true">
+                    </lightning-formatted-date-time>
+                </span>
+            </p>
+        </div>
+
+        <!-- Recursive rendering of children (only if expanded) -->
+        <template if:true={showChildren}>
+            <div class="slds-m-left_large slds-m-top_small slds-p-left_medium slds-border_left">
+                <template for:each={process.children} for:item="child">
+                    <c-process-step-item 
+                        key={child.Id}
+                        process={child}
+                        status-options={statusOptions}
+                        onstatuschange={handleStatusChange}>
+                    </c-process-step-item>
+                </template>
+            </div>
+        </template>
+    </lightning-card>
+</template>

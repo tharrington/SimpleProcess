@@ -7,9 +7,6 @@ public with sharing class ProcessConfiguratorCtrl {
 
     @AuraEnabled
     public static void updateStepsToComplete(String templateId, String stepsToComplete) {
-        System.debug('### templateId: ' + templateId);
-        System.debug('### stepsToComplete: ' + stepsToComplete);
-
         Process_Template__c pt = new Process_Template__c(
             Id = templateId,
             Steps_To_Complete__c = stepsToComplete

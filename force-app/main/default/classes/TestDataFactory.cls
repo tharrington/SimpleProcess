@@ -104,11 +104,7 @@ public class TestDataFactory {
         Boolean canStartProcess,
         Id assignedUserId,
         Decimal dueInValue,
-        String dueInUnits,
-        String fieldName,
-        String operator,
-        String value,
-        Id parentProcessTemplateId
+        String dueInUnits
     ) {
         return new Process_Template__c(
             Name = name,
@@ -117,11 +113,7 @@ public class TestDataFactory {
             Can_Start_Process__c = canStartProcess,
             Assigned_User__c = assignedUserId,
             Due_In_Value__c = dueInValue,
-            Due_In_Units__c = dueInUnits,
-            FieldName__c = fieldName,
-            Operator__c = operator,
-            Value__c = value,
-            ParentProcessTemplateId__c = parentProcessTemplateId
+            Due_In_Units__c = dueInUnits
         );
     }
     
