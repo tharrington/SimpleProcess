@@ -14,6 +14,10 @@ export default class ProcessStepItem extends LightningElement {
         return this.process.In_Progress_Requirement === 'Custom Logic';
     }
 
+    get isCompleted() {
+        return this.process.Status === 'Completed';
+    }
+
     get dueDateClass() {
         if (!this.process.Due_Date) return '';
         const dueDate = new Date(this.process.Due_Date);

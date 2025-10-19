@@ -50,6 +50,20 @@
                     </lightning-formatted-date-time>
                 </span>
             </p>
+            <!-- Show completed date only if status is Completed -->
+            <template if:true={isCompleted}>
+                <p><strong>Completed Date:</strong>
+                    <lightning-formatted-date-time
+                        value={process.Completed_Date}
+                        year="numeric"
+                        month="short"
+                        day="2-digit"
+                        hour="2-digit"
+                        minute="2-digit"
+                        hour12="true">
+                    </lightning-formatted-date-time>
+                </p>
+            </template>
         </div>
 
         <!-- Recursive rendering of children (only if expanded) -->

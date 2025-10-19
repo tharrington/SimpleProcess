@@ -43,15 +43,32 @@
                         </div>
 
                         <div class="slds-m-bottom_small">
-                            <lightning-formatted-date-time
-                                value={proc.Due_Date}
-                                year="numeric"
-                                month="short"
-                                day="2-digit"
-                                hour="2-digit"
-                                minute="2-digit"
-                                hour12="true">
-                            </lightning-formatted-date-time>
+                            <p><strong>Due Date:</strong>
+                                <lightning-formatted-date-time
+                                    value={proc.Due_Date}
+                                    year="numeric"
+                                    month="short"
+                                    day="2-digit"
+                                    hour="2-digit"
+                                    minute="2-digit"
+                                    hour12="true">
+                                </lightning-formatted-date-time>
+                            </p>
+
+                            <!-- Show completed date only if completed -->
+                            <template if:true={proc.isCompleted}>
+                                <p><strong>Completed Date:</strong>
+                                    <lightning-formatted-date-time
+                                        value={proc.Completed_Date}
+                                        year="numeric"
+                                        month="short"
+                                        day="2-digit"
+                                        hour="2-digit"
+                                        minute="2-digit"
+                                        hour12="true">
+                                    </lightning-formatted-date-time>
+                                </p>
+                            </template>
                         </div>
                         
                         <!-- Direct children only -->

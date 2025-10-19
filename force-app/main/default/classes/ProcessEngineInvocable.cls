@@ -11,19 +11,37 @@ public class ProcessEngineInvocable {
         for (Request request : requests) {
             Result result = new Result();
             try {
-                // Find or create the Process record
-                Process__c process = getOrCreateProcess(
-                    request.processTemplateId,
-                    request.targetRecordId,
-                    request.targetObjectType
-                );
+                // Check if Process already exists for this template and target
+                List<Process__c> existingProcesses = [
+                    SELECT Id
+                    FROM Process__c
+                    WHERE ProcessTemplateId__c = :request.processTemplateId
+                    AND TargetObjectId__c = :request.targetRecordId
+                    LIMIT 1
+                ];
                 
-                // Run the process engine
+                Id processId;
+                
+                if (!existingProcesses.isEmpty()) {
+                    // Use existing process
+                    processId = existingProcesses[0].Id;
+                    result.message = 'Using existing process';
+                } else {
+                    // Create new process with all children using the existing method
+                    processId = ProcessStepCtrl.createProcessFromTemplate(
+                        request.processTemplateId,
+                        request.targetRecordId,
+                        request.targetObjectType
+                    );
+                    result.message = 'Process created successfully with all child processes';
+                }
+                
+                // Run the process engine on the top-level process
+                Process__c process = [SELECT Id FROM Process__c WHERE Id = :processId LIMIT 1];
                 ProcessEngine.run(process);
                 
                 result.success = true;
-                result.processId = process.Id;
-                result.message = 'Process executed successfully';
+                result.processId = processId;
                 
             } catch (Exception e) {
                 result.success = false;
@@ -35,36 +53,6 @@ public class ProcessEngineInvocable {
         }
         
         return results;
-    }
-    
-    private static Process__c getOrCreateProcess(
-        Id processTemplateId,
-        Id targetRecordId,
-        String targetObjectType
-    ) {
-        // Check if Process already exists
-        List<Process__c> existingProcesses = [
-            SELECT Id
-            FROM Process__c
-            WHERE ProcessTemplateId__c = :processTemplateId
-            AND TargetObjectId__c = :targetRecordId
-            LIMIT 1
-        ];
-        
-        if (!existingProcesses.isEmpty()) {
-            return existingProcesses[0];
-        }
-        
-        // Create new Process record
-        Process__c process = new Process__c(
-            ProcessTemplateId__c = processTemplateId,
-            TargetObjectId__c = targetRecordId,
-            TargetObjectType__c = targetObjectType,
-            Status__c = 'In Progress' // Adjust based on your fields
-        );
-        
-        insert process;
-        return process;
     }
     
     // Input parameters for the invocable method

@@ -117,7 +117,7 @@ public with sharing class ProcessStepCtrl {
     public static List<ProcessWrapper> getProcessesForTarget(Id targetObjectId) {
         List<Process__c> topLevelProcesses = [
             SELECT Id, Name, ProcessTemplateId__c, ProcessTemplateId__r.Name, ParentProcessId__c, 
-                Status__c, CreatedDate, Owner.Name, Due_Date__c, StepNumber__c, 
+                Status__c, CreatedDate, Completed_Date__c, Owner.Name, Due_Date__c, StepNumber__c,  // Add Completed_Date__c
                 Steps_To_Complete__c, In_Progress_Requirement__c, Custom_Logic_In_Progress__c
             FROM Process__c
             WHERE TargetObjectId__c = :targetObjectId 
@@ -147,6 +147,7 @@ public with sharing class ProcessStepCtrl {
         
         wrapper.Status = proc.Status__c;
         wrapper.CreatedDate = proc.CreatedDate;
+        wrapper.Completed_Date = proc.Completed_Date__c;  // Add this
         
         // Add null check for Owner relationship
         if (proc.Owner != null) {
@@ -163,7 +164,7 @@ public with sharing class ProcessStepCtrl {
         // Query children and recursively build their wrappers
         List<Process__c> children = [
             SELECT Id, Name, ProcessTemplateId__c, ProcessTemplateId__r.Name, ParentProcessId__c, 
-                Status__c, CreatedDate, Owner.Name, Due_Date__c, StepNumber__c, 
+                Status__c, CreatedDate, Completed_Date__c, Owner.Name, Due_Date__c, StepNumber__c,  // Add Completed_Date__c here
                 Steps_To_Complete__c, In_Progress_Requirement__c, Custom_Logic_In_Progress__c
             FROM Process__c
             WHERE ParentProcessId__c = :proc.Id
@@ -185,6 +186,7 @@ public with sharing class ProcessStepCtrl {
         @AuraEnabled public ProcessTemplateRelation ProcessTemplateId { get; set; }
         @AuraEnabled public String Status { get; set; }
         @AuraEnabled public DateTime CreatedDate { get; set; }
+        @AuraEnabled public DateTime Completed_Date { get; set; }  // Add this
         @AuraEnabled public OwnerRelation Owner { get; set; }
         @AuraEnabled public DateTime Due_Date { get; set; }
         @AuraEnabled public Decimal StepNumber { get; set; }

@@ -47,7 +47,11 @@ export default class ProcessStep extends LightningElement {
         this.wiredProcessesResult = result;
         const { data, error } = result;
         if (data) {
-            this.processData = data;
+            // Add isCompleted flag for template rendering
+            this.processData = data.map(proc => ({
+                ...proc,
+                isCompleted: proc.Status === 'Completed'
+            }));
         } else if (error) {
             console.error('Error loading processes:', error);
         }
