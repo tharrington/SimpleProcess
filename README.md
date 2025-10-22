@@ -86,7 +86,7 @@ Each step is a discrete unit of execution with configurable metadata:
 
 ## 5. Object Model Overview
 
-The attached **Entity Relationship Diagram (ERD)** outlines the primary objects and their relationships 【28†ERD.pdf†L1-L20】:
+The attached **Entity Relationship Diagram (ERD)** outlines the primary objects and their relationships [【28†ERD.pdf†L1-L20】](https://lucid.app/lucidchart/266a5025-6708-4fc1-a117-f8c21d90e015/edit?from_internal=true):
 
 ### Core Entities
 - **Process__c** – Represents a running process instance. Includes fields such as:
