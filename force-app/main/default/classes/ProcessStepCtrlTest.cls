@@ -3,6 +3,20 @@ public class ProcessStepCtrlTest {
     
     @TestSetup
     static void makeData() {
+        // Create test Accounts first
+        List<Account> testAccounts = new List<Account>();
+        testAccounts.add(new Account(
+            Name = 'Test Account',
+            Type = 'Customer',
+            Industry = 'Technology'
+        ));
+        testAccounts.add(new Account(
+            Name = 'Test Account 2',
+            Type = 'Prospect',
+            Industry = 'Manufacturing'
+        ));
+        insert testAccounts;
+        
         // Create a user to assign to templates
         User testUser = TestDataFactory.createStandardUser();
         insert testUser;
@@ -71,11 +85,8 @@ public class ProcessStepCtrlTest {
     
     @isTest
     static void testCreateProcessFromTemplate() {
-        // Create a test Account
-        Account testAccount = new Account(Name = 'Test Account');
-        insert testAccount;
-        
         // Get test data
+        Account testAccount = [SELECT Id FROM Account WHERE Name = 'Test Account' LIMIT 1];
         Process_Template__c mainTemplate = [SELECT Id FROM Process_Template__c WHERE Name = 'Main Process Template' LIMIT 1];
         
         Test.startTest();
@@ -129,12 +140,11 @@ public class ProcessStepCtrlTest {
     
     @isTest
     static void testProcessManagement() {
-        // Create test Account
-        Account testAccount = new Account(Name = 'Test Account 2');
-        insert testAccount;
-        
-        // Create test process data
+        // Get test data
+        Account testAccount = [SELECT Id FROM Account WHERE Name = 'Test Account 2' LIMIT 1];
         Process_Template__c template = [SELECT Id FROM Process_Template__c WHERE Name = 'Main Process Template' LIMIT 1];
+        
+        Test.startTest();
         
         // Create process from template
         Id mainProcessId = ProcessStepCtrl.createProcessFromTemplate(
@@ -143,10 +153,8 @@ public class ProcessStepCtrlTest {
             'Account'
         );
         
-        Test.startTest();
-        
         // Test getProcessesForTarget
-        List<Process__c> processes = ProcessStepCtrl.getProcessesForTarget(testAccount.Id);
+        List<ProcessStepCtrl.ProcessWrapper> processes = ProcessStepCtrl.getProcessesForTarget(testAccount.Id);
         
         ProcessStepCtrl.updateProcessStatus(mainProcessId, 'In Progress');
         

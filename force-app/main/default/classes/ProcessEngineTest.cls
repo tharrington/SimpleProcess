@@ -86,16 +86,11 @@ public class ProcessEngineTest {
         
         Test.startTest();
         
-        // The ProcessEngine has an issue with its dynamic query construction
-        // It uses :process.TargetObjectId__c in a string which won't work
-        // We'll test what we can and expect the QueryException
-        try {
-            ProcessEngine.run(mainProcess);
-            System.assert(false, 'Expected QueryException due to ProcessEngine implementation');
-        } catch (QueryException e) {
-            System.assert(e.getMessage().contains('Variable does not exist'), 
-                         'Expected specific query exception: ' + e.getMessage());
-        }
+        // Test that ProcessEngine runs successfully
+        ProcessEngine.run(mainProcess);
+        
+        // Verify it completed without errors
+        System.assertNotEquals(null, mainProcess.Id);
         
         Test.stopTest();
     }
@@ -171,15 +166,11 @@ public class ProcessEngineTest {
         
         Test.startTest();
         
-        // The ProcessEngine has a bug in its dynamic query construction
-        // We expect it to fail with a QueryException
-        try {
-            ProcessEngine.run(testProcess);
-            System.assert(false, 'Expected QueryException due to ProcessEngine bug');
-        } catch (QueryException e) {
-            System.assert(e.getMessage().contains('Variable does not exist'), 
-                         'Expected query exception about variable: ' + e.getMessage());
-        }
+        // Test that ProcessEngine runs successfully and evaluates rules
+        ProcessEngine.run(testProcess);
+        
+        // Verify it completed without errors
+        System.assertNotEquals(null, testProcess.Id);
         
         Test.stopTest();
     }

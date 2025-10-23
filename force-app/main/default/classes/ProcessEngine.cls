@@ -13,10 +13,11 @@ public without sharing class ProcessEngine {
             ORDER BY Order__c ASC
         ];
 
+        String targetId = process.TargetObjectId__c;
         SObject targetRecord = Database.query(
             'SELECT Id, ' + getFields(rules) +
             ' FROM ' + process.TargetObjectType__c +
-            ' WHERE Id = :process.TargetObjectId__c'
+            ' WHERE Id = :targetId'
         );
 
         for (Process_Rule__c rule : rules) {

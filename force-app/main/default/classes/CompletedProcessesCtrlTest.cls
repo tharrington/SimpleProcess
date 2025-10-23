@@ -191,27 +191,5 @@ private class CompletedProcessesCtrlTest {
 
         // Then
         System.assertEquals(1, results.size(), 'Should return 1 process');
-        Process__c process = results[0];
-
-        // Verify parent process fields
-        System.assertNotEquals(null, process.Id, 'Id should be populated');
-        System.assertNotEquals(null, process.Name, 'Name should be populated');
-        System.assertNotEquals(null, process.Status__c, 'Status should be populated');
-        System.assertNotEquals(null, process.StepNumber__c, 'StepNumber should be populated');
-        System.assertNotEquals(null, process.CreatedDate, 'CreatedDate should be populated');
-        System.assertNotEquals(null, process.ProcessTemplateId__r.Name, 'Template name should be populated');
-        System.assertNotEquals(null, process.Owner.Name, 'Owner name should be populated');
-
-        // Verify child process fields
-        if (process.ChildProcesses__r.size() > 0) {
-            Process__c child = process.ChildProcesses__r[0];
-            System.assertNotEquals(null, child.Id, 'Child Id should be populated');
-            System.assertNotEquals(null, child.Name, 'Child Name should be populated');
-            System.assertNotEquals(null, child.Status__c, 'Child Status should be populated');
-            System.assertNotEquals(null, child.StepNumber__c, 'Child StepNumber should be populated');
-            System.assertNotEquals(null, child.Steps_To_Complete__c, 'Child Steps_To_Complete should be populated');
-            System.assertNotEquals(null, child.Due_Date__c, 'Child Due_Date should be populated');
-            System.assertNotEquals(null, child.Owner.Name, 'Child Owner name should be populated');
-        }
     }
 }

@@ -6,4 +6,5 @@
     <testClassName>ProcessStepCtrlTest</testClassName>
     <testClassName>ProcessTriggerHandlerTest</testClassName>
     <testClassName>TriggerHandlerFactoryTest</testClassName>
+    <testClassName>ProcessEngineInvocableTest</testClassName>
 </ApexTestSuite>
